@@ -1,29 +1,28 @@
-function init() {
-    var game = document.getElementById('game');
-    var context = game.getContext('2d');
-    var background = document.getElementById('background');
-    var gridSize = HEIGHT;
+var tickManager;
+var allowClick = true;
 
-    context.drawImage(background, 0, 0);
+function FakesNLadders(layer, gridSize) {
+    this.gridSize = gridSize;
+    this.layer = layer;
+    this.layer.addGameObject(this);
+}
 
+FakesNLadders.prototype.draw = function(context) {
     context.fillStyle = 'black';
-    context.strokeRect(0, 0, gridSize, gridSize);
+    context.strokeRect(0, 0, this.gridSize, this.gridSize);
 
-//    context.fillStyle = 'rgba(100, 100, 100, 0.5)';
-//    context.fillRect(200, 200, HEIGHT - 400, HEIGHT - 400);
-    
     // grid squares
     var squaresToSide = 10;
     var nSquares = squaresToSide*squaresToSide;
-    var squareSize = gridSize/squaresToSide;
-    for (var x = 0.5; x < gridSize; x += squareSize) {    
+    var squareSize = this.gridSize/squaresToSide;
+    for (var x = 0.5; x < this.gridSize; x += squareSize) {    
         context.moveTo(x, 0);
-        context.lineTo(x, gridSize);
+        context.lineTo(x, this.gridSize);
     }
 
-    for (var y = 0.5; y < gridSize; y += squareSize) {    
+    for (var y = 0.5; y < this.gridSize; y += squareSize) {    
         context.moveTo(0, y);
-        context.lineTo(gridSize, y);
+        context.lineTo(this.gridSize, y);
     }
     
     context.strokeStyle = 'rgba(70, 70, 70, 1)';
@@ -53,27 +52,68 @@ function init() {
     
     // board end landing zone
     context.beginPath();
-    context.moveTo(gridSize, squareSize*2 + 0.5);
+    context.moveTo(this.gridSize, squareSize*2 + 0.5);
     context.lineTo(WIDTH, squareSize*2 + 0.5);
     context.stroke();
-    context.fillText("END", gridSize - (gridSize - WIDTH)/2, squareSize);
+    context.fillText("END", this.gridSize - (this.gridSize - WIDTH)/2, squareSize);
     
     // 'A' text option
     context.beginPath();
-    context.moveTo(gridSize, squareSize*5 + 0.5);
+    context.moveTo(this.gridSize, squareSize*5 + 0.5);
     context.lineTo(WIDTH, squareSize*5 + 0.5);
     context.stroke();
-    context.fillText("Option A", gridSize - (gridSize - WIDTH)/2, squareSize*3.5);
+    context.fillText("Option A", this.gridSize - (this.gridSize - WIDTH)/2, squareSize*3.5);
     
     // 'B' text option
     context.beginPath();
-    context.moveTo(gridSize, squareSize*8 + 0.5);
+    context.moveTo(this.gridSize, squareSize*8 + 0.5);
     context.lineTo(WIDTH, squareSize*8 + 0.5);
     context.stroke();
-    context.fillText("Option B", gridSize - (gridSize - WIDTH)/2, squareSize*6.5);
+    context.fillText("Option B", this.gridSize - (this.gridSize - WIDTH)/2, squareSize*6.5);
     
     // status/help text area
-    context.fillText("Status", gridSize - (gridSize - WIDTH)/2, squareSize*9);
+    context.fillText("Status", this.gridSize - (this.gridSize - WIDTH)/2, squareSize*9);
 }
 
-document.addEventListener('load', init, true);
+FakesNLadders.prototype.hit = function(p) {
+    alert(p);
+}
+
+function init(e) {
+    e.stopPropagation();
+    var game = document.getElementById('game');
+    var gameContext = game.getContext('2d');
+    var backBuffer = document.getElementById('back-buffer');
+    var context = backBuffer.getContext('2d');
+
+    var background = document.getElementById('background');
+
+    var gameLayer = new Layer();
+
+    function redraw() {
+        context.drawImage(background, 0, 0);
+
+        context.save();
+        gameLayer.draw(context);
+        context.restore();
+
+        gameContext.drawImage(backBuffer, 0, 0);
+    }
+
+    tickManager = new TickManager(redraw);
+
+    document.addEventListener('mousedown',
+            function(mouseEvent) {
+                mouseEvent.stopPropagation();
+                var point = new Point(
+                    mouseEvent.pageX - game.offsetLeft,
+                    mouseEvent.pageY - game.offsetTop);
+                gameLayer.hit(point);
+                redraw();
+            }, false);
+
+    var fakesNLadders = new FakesNLadders(gameLayer, HEIGHT);
+    redraw();
+}
+
+window.onload = init;
