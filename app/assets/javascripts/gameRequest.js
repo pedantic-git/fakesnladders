@@ -12,7 +12,7 @@ GameRequest.prototype.getAllUsers = function(callback) {
 
 // callback is a function that will be passed the userId, their icon url, and current square
 GameRequest.prototype.getCurrentUser = function(callback) {
-    var url = "/api/users/me.json";
+    var url = "/api/users/me";
     var reqCallback = function(response) {
         callback(response.id, response.avatar_url, response.position);
     };
@@ -54,7 +54,7 @@ GameRequest.prototype.checkChoice = function(questionId, choice, callback) {
 GameRequest.prototype.sendRequest = function(method, url, sendObject, callback) {
     var req = new XMLHttpRequest();
 
-    req.open(method, "/_test"+url);
+    req.open(method, url);
     req.onreadystatechange = function() {
         if (req.readyState === 4) {
             if(req.status === 200) {
