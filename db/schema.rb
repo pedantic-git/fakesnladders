@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120728144505) do
+ActiveRecord::Schema.define(:version => 20120728152035) do
 
   create_table "choices", :force => true do |t|
     t.integer  "topic_id"
@@ -25,10 +25,22 @@ ActiveRecord::Schema.define(:version => 20120728144505) do
   add_index "choices", ["option_b_id"], :name => "index_choices_on_option_b_id"
   add_index "choices", ["topic_id"], :name => "index_choices_on_topic_id"
 
+  create_table "markov_chains", :force => true do |t|
+    t.string   "current"
+    t.string   "next"
+    t.float    "probability"
+    t.integer  "topic_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
+  add_index "markov_chains", ["topic_id"], :name => "index_markov_chains_on_topic_id"
+
   create_table "topics", :force => true do |t|
     t.string   "title"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+    t.string   "since_id",   :limit => nil
   end
 
   create_table "tweets", :force => true do |t|
@@ -37,6 +49,7 @@ ActiveRecord::Schema.define(:version => 20120728144505) do
     t.integer  "topic_id"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+    t.string   "sender"
   end
 
   add_index "tweets", ["topic_id"], :name => "index_tweets_on_topic_id"

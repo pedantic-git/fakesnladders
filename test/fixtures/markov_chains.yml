@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  current: 
+  next: 
+  probability: 1.5
+  topic: 
+
+two:
+  current: 
+  next: 
+  probability: 1.5
+  topic: 
