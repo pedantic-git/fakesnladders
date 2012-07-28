@@ -1,0 +1,3 @@
+worker:
+  approot: generator
+  type: python-worker
