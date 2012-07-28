@@ -9,6 +9,8 @@ class Api::ChoicesController < ApplicationController
 	end
 	
 	def update
+		c = Choice.find(params[:id])
+		render :json => { :answer => (c.choose(params[:option]) ? 'real' : 'fake') }
 	end
 	
 end
