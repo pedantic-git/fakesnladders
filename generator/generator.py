@@ -28,7 +28,7 @@ def get_recent_tweets(topic, since_id):
         sys.exit(1)
 
     try:
-        data = json.loads(data)
+        data = json.loads(data.decode('utf-8'))
     except ValueError, e:
         print 'json.loads failed:', e
         sys.exit(1)
