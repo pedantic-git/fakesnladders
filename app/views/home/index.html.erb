@@ -1,12 +1,31 @@
 <%- content_for(:head) do -%>
     <style type="text/css">
-        canvas {
+        #container {
             margin: 0 auto;
+            width: 929px;
+            height: 600px;
+            background-image: url(<%= asset_path 'faded.png' %>);
+        }
+        canvas {
             display: block;
             -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+            float: left;
         }
         #back-buffer {
             display: none;
+        }
+        #side {
+            display: block;
+            float: left;
+            width: 329px;
+        }
+        .button {
+            height: 120px;
+            background-image: url(<%= asset_path 'button.png' %>);
+            padding: 30px;
+            font-family: sans-serif;
+            font-weight: bold;
+            font-size: 16px;
         }
         .hidden {
             display: none;
@@ -25,7 +44,15 @@
   <p>User: <%=link_to user.name, user %></p>
 <% end %>
 
-<canvas id="game" width="929" height="600"></canvas>
-<canvas id="back-buffer" width="929" height="600"></canvas>
+<div id="container">
+    <canvas id="game" width="600" height="600"></canvas>
+    <canvas id="back-buffer" width="600" height="600"></canvas>
+    <div id="side">
+        <div style="width: 329px; height: 120px">GOAL</div>
+        <div class="button">Option A etc etc etc etc etc etc etc etc etc etc etc etc etc etc etc</div>
+        <div class="button">Option B etc etc etc etc etc etc etc etc etc etc etc etc etc etc etc</div>
+        <div style="width: 329px; height: 120px">STATUS</div>
+    </div>
+</div>
 
 <%= image_tag 'faded.png', :id => 'background', :class => 'hidden' %>
