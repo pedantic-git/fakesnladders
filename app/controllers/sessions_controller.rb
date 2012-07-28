@@ -14,11 +14,7 @@ class SessionsController < ApplicationController
     user.position = 0
     user.save!
     session[:user_id] = user.id
-    if user.email.blank?
-      redirect_to edit_user_path(user), :alert => "Please enter your email address."
-    else
-      redirect_to root_url, :notice => 'Signed in!'
-    end
+    redirect_to root_url, :notice => 'Signed in!'
 
   end
 
