@@ -40,21 +40,23 @@ def get_recent_tweets(topic, since_id):
     return data
 
 def load_topics(cursor):
-    return (r[0] for r in cursor.execute('SELECT title FROM topics'))
+    cursor.execute('SELECT title FROM topics')
+    return (r[0] for r in cursor.fetchall())
 
 def load_topic_id(cursor, topic):
-    cursor.execute('SELECT id FROM topics WHERE title=?', (topic,))
+    cursor.execute('SELECT id FROM topics WHERE title=%s', (topic,))
     return cursor.fetchone()[0]
 
 def load_since_id(cursor, topic):
-    cursor.execute('SELECT since_id FROM topics WHERE title=?', (topic,))
+    cursor.execute('SELECT since_id FROM topics WHERE title=%s', (topic,))
     return cursor.fetchone()[0]
 
 def store_since_id(cursor, topic, since_id):
-    cursor.execute('UPDATE topics SET since_id=? WHERE title=?', (since_id, topic))
+    cursor.execute('UPDATE topics SET since_id=%s WHERE title=%s', (since_id, topic))
 
 def load_markov_chain(cursor, topic, mc):
-    for current, next_, count in cursor.execute('SELECT current, next, count FROM markov_chains WHERE topic_id=?', (load_topic_id(cursor, topic),)):
+    cursor.execute('SELECT current, next, count FROM markov_chains WHERE topic_id=%s', (load_topic_id(cursor, topic),))
+    for current, next_, count in cursor.fetchall():
         bucket = mc.chain.get(current, {})
         bucket[next_] = count
         mc.chain[current] = bucket
@@ -65,14 +67,14 @@ def store_markov_chain(cursor, topic, mc):
     for current in mc.chain:
         bucket = mc.chain[current]
         for next_ in bucket:
-            cursor.execute('INSERT OR REPLACE INTO markov_chains (topic_id, current, next, count, created_at, updated_at) VALUES (?, ?, ?, ?, "", "")', (topic_id, current, next_, bucket[next_]))
+            cursor.execute('INSERT OR REPLACE INTO markov_chains (topic_id, current, next, count, created_at, updated_at) VALUES (%s, %s, %s, %s, "", "")', (topic_id, current, next_, bucket[next_]))
 
 def load_random_user(cursor, topic):
-    cursor.execute('SELECT sender FROM tweets WHERE topic_id=? ORDER BY RANDOM() LIMIT 1', (load_topic_id(cursor, topic),))
+    cursor.execute('SELECT sender FROM tweets WHERE topic_id=%s ORDER BY RANDOM() LIMIT 1', (load_topic_id(cursor, topic),))
     return cursor.fetchone()[0]
 
 def store_tweet(cursor, topic, sender, text, fake):
-    cursor.execute('INSERT INTO tweets (text, fake, topic_id, sender, created_at, updated_at) VALUES (?, ?, ?, ?, "", "")', (text, fake, load_topic_id(cursor, topic), sender))
+    cursor.execute('INSERT INTO tweets (text, fake, topic_id, sender, created_at, updated_at) VALUES (%s, %s, %s, %s, "", "")', (text, fake, load_topic_id(cursor, topic), sender))
 
 class MarkovChain(object):
     def __init__(self, cardinality):
