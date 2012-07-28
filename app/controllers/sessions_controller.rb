@@ -9,6 +9,9 @@ class SessionsController < ApplicationController
     auth = request.env["omniauth.auth"]
     user = User.where(:provider => auth['provider'], 
                       :uid => auth['uid']).first || User.create_with_omniauth(auth)
+    # Update avatar
+    user.avatar_url = auth['info']['image']
+    user.save!
     session[:user_id] = user.id
     if user.email.blank?
       redirect_to edit_user_path(user), :alert => "Please enter your email address."

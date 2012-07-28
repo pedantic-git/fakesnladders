@@ -2,7 +2,7 @@
 <ul class="nav">
   <% if user_signed_in? %>
     <li>
-    Logged in as <%= current_user.name %>
+    Logged in as <%= image_tag current_user.avatar_url %> <%= current_user.name %>
     </li>
     <li>
     <%= link_to 'Logout', signout_path %>        
