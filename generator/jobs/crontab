@@ -1,0 +1,1 @@
+*/5 * * * * . ~/env/bin/activate && python ~/current/generator.py
