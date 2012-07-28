@@ -19,7 +19,11 @@ test:
   timeout: 5000
 
 production:
-  adapter: sqlite3
-  database: db/production.sqlite3
-  pool: 5
-  timeout: 5000
+  adapter: postgresql
+  database: template1
+  host: fakesnladders-50mrubberduckie.dotcloud.com
+  port: 33209
+  username: root
+  password: nTRhWHrqmiuHYE7lJ5ea
+
+
