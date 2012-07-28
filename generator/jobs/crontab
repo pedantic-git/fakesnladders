@@ -1,1 +1,1 @@
-*/5 * * * * python ~/current/generator.py
+*/5 * * * * . ~/env/bin/activate && python ~/current/generator.py
