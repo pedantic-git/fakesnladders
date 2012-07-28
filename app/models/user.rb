@@ -12,4 +12,12 @@ class User < ActiveRecord::Base
     end
   end
 
+  def for_api
+  	{
+  		:id => self.id, 
+  		:avatar_url => self.avatar_url,
+  	 	:position => self.position
+  	}
+  end
+  
 end
