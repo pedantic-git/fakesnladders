@@ -4,8 +4,13 @@ import json
 import urllib
 import urllib2
 import random
+import psycopg2
 
-TOPIC = '#leedshack'
+DB_HOST = 'fakesnladders-50mrubberduckie.dotcloud.com'
+DB_PORT = 33209
+DB_NAME = 'template1'
+DB_USER = 'root'
+DB_PASSWORD = 'nTRhWHrqmiuHYE7lJ5ea'
 SEARCH_URL = 'http://search.twitter.com/search.json?q=%(topic)s&result_type=recent&rpp=100&since_id=%(since_id)s'
 HTTP_TIMEOUT = 120 # seconds
 
@@ -33,6 +38,44 @@ def get_recent_tweets(topic, since_id):
         sys.exit(1)
 
     return data
+
+def load_topics(cursor):
+    cursor.execute('SELECT title FROM topics')
+    return (r[0] for r in cursor.fetchall())
+
+def load_topic_id(cursor, topic):
+    cursor.execute('SELECT id FROM topics WHERE title=%s', (topic,))
+    return cursor.fetchone()[0]
+
+def load_since_id(cursor, topic):
+    cursor.execute('SELECT since_id FROM topics WHERE title=%s', (topic,))
+    return cursor.fetchone()[0]
+
+def store_since_id(cursor, topic, since_id):
+    cursor.execute('UPDATE topics SET since_id=%s WHERE title=%s', (since_id, topic))
+
+def load_markov_chain(cursor, topic, mc):
+    cursor.execute('SELECT current, next, count FROM markov_chains WHERE topic_id=%s', (load_topic_id(cursor, topic),))
+    for current, next_, count in cursor.fetchall():
+        bucket = mc.chain.get(current, {})
+        bucket[next_] = count
+        mc.chain[current] = bucket
+
+def store_markov_chain(cursor, topic, mc):
+    topic_id = load_topic_id(cursor, topic)
+
+    for current in mc.chain:
+        bucket = mc.chain[current]
+        for next_ in bucket:
+            cursor.execute('DELETE FROM markov_chains WHERE topic_id=%s AND current=%s AND next=%s', (topic_id, current, next_))
+            cursor.execute('INSERT INTO markov_chains (topic_id, current, next, count, created_at, updated_at) VALUES (%s, %s, %s, %s, NOW(), NOW())', (topic_id, current, next_, bucket[next_]))
+
+def load_random_user(cursor, topic):
+    cursor.execute('SELECT sender FROM tweets WHERE topic_id=%s ORDER BY RANDOM() LIMIT 1', (load_topic_id(cursor, topic),))
+    return cursor.fetchone()[0]
+
+def store_tweet(cursor, topic, sender, text, fake):
+    cursor.execute('INSERT INTO tweets (text, fake, topic_id, sender, created_at, updated_at) VALUES (%s, %s, %s, %s, NOW(), NOW())', (text, fake, load_topic_id(cursor, topic), sender))
 
 class MarkovChain(object):
     def __init__(self, cardinality):
@@ -88,6 +131,12 @@ class MarkovChain(object):
             next_ = self._choose_next(self.chain[current])
             current = ' '.join(current.split()[1:] + [next_])
             if next_ == '@@start@@':
+                # Try again if we only generated one word or the sentence
+                # became too long.
+                if len(sentence.split()) == 1 or len(sentence) > 140:
+                    current = self._choose_first_tuple()
+                    sentence = ' '.join(current.split()[1:])
+                    continue
                 break
             elif next_ in '.!?,;:':
                 sentence += next_
@@ -97,25 +146,31 @@ class MarkovChain(object):
                 sentence = next_
         return sentence
 
-mc = MarkovChain(1)
+conn = psycopg2.connect(database=DB_NAME, user=DB_USER, password=DB_PASSWORD, host=DB_HOST, port=DB_PORT)
+cursor = conn.cursor()
 
-# TODO persist since_id
-data = get_recent_tweets(TOPIC, '0')
-#open('/tmp/twitter_data.json', 'w').write(json.dumps(data))
-#data = json.loads(open('/tmp/twitter_data.json', 'r').read())
-for result in data['results']:
-    # Skip retweets
-    if result['text'].startswith('RT '):
-        continue
+for topic in load_topics(cursor):
+    print 'Topic:', topic
+    since_id = load_since_id(cursor, topic)
+    data = get_recent_tweets(topic, since_id)
+    store_since_id(cursor, topic, data['max_id_str'])
+    print 'Got %d new tweets' % len(data['results'])
 
-    mc.add_input(result['text'])
-#    print '@%s' % result['from_user']
-#    print result['text']
+    mc = MarkovChain(1)
+    load_markov_chain(cursor, topic, mc)
 
-#mc.add_input('This is a test!')
-#mc.add_input('This is a hack day')
-#mc.add_input('Let\'s see if this works.')
-#mc.add_input('Another tweet from me!')
+    for result in data['results']:
+        # Skip retweets
+        if result['text'].startswith('RT '):
+            continue
 
-for x in xrange(20):
-    print mc.generate()
+        mc.add_input(result['text'])
+        store_tweet(cursor, topic, result['from_user'], result['text'], False)
+
+    store_markov_chain(cursor, topic, mc)
+
+    for i in xrange(10):
+        sender = load_random_user(cursor, topic)
+        store_tweet(cursor, topic, sender, mc.generate(), True)
+
+conn.commit()
