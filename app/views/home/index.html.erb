@@ -1,4 +1,30 @@
+<%- content_for(:head) do -%>
+    <style type="text/css">
+        canvas {
+            margin: 0 auto;
+            display: block;
+            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        }
+        #back-buffer {
+            display: none;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+    <script type="text/javascript">
+        var WIDTH = 929;
+        var HEIGHT = 600;
+    </script>
+    <%= javascript_include_tag "fakesnladders.js" %>
+<%- end -%>
+
 <h3>Home</h3>
 <% @users.each do |user| %>
   <p>User: <%=link_to user.name, user %></p>
 <% end %>
+
+<canvas id="game" width="929" height="600"></canvas>
+<canvas id="back-buffer" width="929" height="600"></canvas>
+
+<%= image_tag 'faded.png', :id => 'background', :class => 'hidden' %>
