@@ -27,4 +27,9 @@ class Choice < ActiveRecord::Base
   	}
   end
   
+  # option is 'a' or 'b' - returns false if the fake one
+  def choose(option)
+  	!((option == 'a' ? self.option_a : self.option_b).fake?)
+  end
+  
 end
