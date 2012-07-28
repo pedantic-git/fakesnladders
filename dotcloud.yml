@@ -1,3 +1,7 @@
+www:
+  type: ruby
+db:
+  type: postgresql
 worker:
   approot: generator
   type: python-worker
