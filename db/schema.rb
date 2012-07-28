@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120728153925) do
+ActiveRecord::Schema.define(:version => 20120728190824) do
 
   create_table "choices", :force => true do |t|
     t.integer  "topic_id"
@@ -28,10 +28,10 @@ ActiveRecord::Schema.define(:version => 20120728153925) do
   create_table "markov_chains", :force => true do |t|
     t.string   "current"
     t.string   "next"
-    t.float    "probability"
     t.integer  "topic_id"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+    t.integer  "count"
   end
 
   add_index "markov_chains", ["topic_id"], :name => "index_markov_chains_on_topic_id"
