@@ -11,13 +11,23 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120728142351) do
+ActiveRecord::Schema.define(:version => 20120728142729) do
 
   create_table "topics", :force => true do |t|
     t.string   "title"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
+
+  create_table "tweets", :force => true do |t|
+    t.string   "text"
+    t.boolean  "fake"
+    t.integer  "topic_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "tweets", ["topic_id"], :name => "index_tweets_on_topic_id"
 
   create_table "users", :force => true do |t|
     t.string   "name"
