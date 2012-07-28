@@ -1,15 +1,15 @@
 <%= link_to "Fakesnladders", root_path, :class => 'brand' %>
-<ul class="nav">
+<ul class="nav pull-right">
   <% if user_signed_in? %>
     <li>
-    Logged in as <%= image_tag current_user.avatar_url %> <%= current_user.name %>
+      <%= link_to "sign out", signout_path %>
     </li>
     <li>
-    <%= link_to 'Logout', signout_path %>        
+      <a href="#"><%= current_user.name %> <%= image_tag(current_user.avatar_url, :style => 'width:16px;height:16px') %></a>
     </li>
   <% else %>
     <li>
-    <%= link_to 'Login', signin_path %>  
+      <%= link_to image_tag('sign-in-with-twitter-d.png'), signin_path %>  
     </li>
   <% end %>
 </ul>
