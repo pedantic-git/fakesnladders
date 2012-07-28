@@ -4,8 +4,13 @@ import json
 import urllib
 import urllib2
 import random
-import sqlite3
+import psycopg2
 
+DB_HOST = 'fakesnladders-50mrubberduckie.dotcloud.com'
+DB_PORT = 33209
+DB_NAME = 'template1'
+DB_USER = 'root'
+DB_PASSWORD = 'nTRhWHrqmiuHYE7lJ5ea'
 SEARCH_URL = 'http://search.twitter.com/search.json?q=%(topic)s&result_type=recent&rpp=100&since_id=%(since_id)s'
 HTTP_TIMEOUT = 120 # seconds
 
@@ -139,7 +144,7 @@ class MarkovChain(object):
                 sentence = next_
         return sentence
 
-conn = sqlite3.connect('test.db')
+conn = psycopg2.connect(database=DB_NAME, user=DB_USER, password=DB_PASSWORD, host=DB_HOST, port=DB_PORT)
 cursor = conn.cursor()
 
 for topic in load_topics(cursor):
