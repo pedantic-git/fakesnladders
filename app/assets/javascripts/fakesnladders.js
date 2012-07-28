@@ -5,6 +5,8 @@ function FakesNLadders(layer, gridSize) {
     this.gridSize = gridSize;
     this.layer = layer;
     this.layer.addGameObject(this);
+    this.squaresToSide = 10;
+    this.squareSize = this.gridSize / this.squaresToSide;
 }
 
 FakesNLadders.prototype.draw = function(context) {
@@ -12,15 +14,12 @@ FakesNLadders.prototype.draw = function(context) {
     context.strokeRect(0, 0, this.gridSize, this.gridSize);
 
     // grid squares
-    var squaresToSide = 10;
-    var nSquares = squaresToSide*squaresToSide;
-    var squareSize = this.gridSize/squaresToSide;
-    for (var x = 0.5; x < this.gridSize; x += squareSize) {    
+    for (var x = 0.5; x < this.gridSize; x += this.squareSize) {    
         context.moveTo(x, 0);
         context.lineTo(x, this.gridSize);
     }
 
-    for (var y = 0.5; y < this.gridSize; y += squareSize) {    
+    for (var y = 0.5; y < this.gridSize; y += this.squareSize) {    
         context.moveTo(0, y);
         context.lineTo(this.gridSize, y);
     }
@@ -33,54 +32,23 @@ FakesNLadders.prototype.draw = function(context) {
     context.textBaseline = 'bottom';
     context.textAlign = 'middle'; // left is the same??
     var sqNo = 0;
-    var centring = squareSize/2;
-    for(var y = squaresToSide-1; y >= 0; y--) {
-        for(var x = squaresToSide-1; x >= 0; x--) {
-            context.fillText(sqNo++, x*squareSize + centring, y*squareSize + centring);
+    var centring = this.squareSize/2;
+    for(var y = this.squaresToSide-1; y >= 0; y--) {
+        for(var x = this.squaresToSide-1; x >= 0; x--) {
+            context.fillText(sqNo++, x*this.squareSize + centring, y*this.squareSize + centring);
         }
         y--;
-        for(var x = 0; x < squaresToSide; x++) {
-            context.fillText(sqNo++, x*squareSize + centring, y*squareSize + centring);
+        for(var x = 0; x < this.squaresToSide; x++) {
+            context.fillText(sqNo++, x*this.squareSize + centring, y*this.squareSize + centring);
         }
     }
     
-    // borders and placeholders for dash elements
-    // marker text style
-    context.font = "bold 24px sans-serif"; // marker text
-    context.textBaseline = 'middle';
-    context.textAlign = 'middle'; // left is the same??
-    
-    // board end landing zone
-    context.beginPath();
-    context.moveTo(this.gridSize, squareSize*2 + 0.5);
-    context.lineTo(WIDTH, squareSize*2 + 0.5);
-    context.stroke();
-    context.fillText("END", this.gridSize - (this.gridSize - WIDTH)/2, squareSize);
-    
-    // 'A' text option
-    context.beginPath();
-    context.moveTo(this.gridSize, squareSize*5 + 0.5);
-    context.lineTo(WIDTH, squareSize*5 + 0.5);
-    context.stroke();
-    context.fillText("Option A", this.gridSize - (this.gridSize - WIDTH)/2, squareSize*3.5);
-    
-    // 'B' text option
-    context.beginPath();
-    context.moveTo(this.gridSize, squareSize*8 + 0.5);
-    context.lineTo(WIDTH, squareSize*8 + 0.5);
-    context.stroke();
-    context.fillText("Option B", this.gridSize - (this.gridSize - WIDTH)/2, squareSize*6.5);
-    
-    // status/help text area
-    context.fillText("Status", this.gridSize - (this.gridSize - WIDTH)/2, squareSize*9);
 }
 
 FakesNLadders.prototype.hit = function(p) {
-    alert(p);
 }
 
-function init(e) {
-    e.stopPropagation();
+function init() {
     var game = document.getElementById('game');
     var gameContext = game.getContext('2d');
     var backBuffer = document.getElementById('back-buffer');
