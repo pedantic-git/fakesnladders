@@ -116,4 +116,4 @@ function init(e) {
     redraw();
 }
 
-addEventListener('load', init, false);
+window.onload = init;
