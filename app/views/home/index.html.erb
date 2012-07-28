@@ -39,11 +39,6 @@
     <%= javascript_include_tag "fakesnladders.js" %>
 <%- end -%>
 
-<h3>Home</h3>
-<% @users.each do |user| %>
-  <p>User: <%=link_to user.name, user %></p>
-<% end %>
-
 <div id="container">
     <canvas id="game" width="600" height="600"></canvas>
     <canvas id="back-buffer" width="600" height="600"></canvas>
