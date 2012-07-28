@@ -16,4 +16,11 @@ class Api::UsersController < ApplicationController
 		end
 	end
 	
+	def update
+		u = User.find(params[:id])
+		u.position = params[:position]
+		u.save!
+		render :json => u.for_api
+	end
+	
 end
