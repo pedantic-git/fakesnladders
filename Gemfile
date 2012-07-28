@@ -36,3 +36,9 @@ gem 'jquery-rails'
 
 # To use debugger
 # gem 'debugger'
+
+gem "pg", ">= 0.14.0"
+gem "twitter-bootstrap-rails", ">= 2.0.3", :group => :assets
+gem "therubyracer", :group => :assets, :platform => :ruby
+gem "omniauth", ">= 1.1.0"
+gem "omniauth-twitter"
