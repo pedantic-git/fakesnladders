@@ -162,7 +162,7 @@ input[type='range']::-webkit-slider-thumb {
     -webkit-transform:rotateY(0deg) translateZ(50px);
     -moz-transform:rotateY(0deg) translateZ(50px);
     -ms-transform:rotateY(0deg) translateZ(50px);
-    background: rgba(255,0,0,0.5) ;
+    background: rgba(0,0,0,0.7) ;
     z-index:1;
     border:5px rgba(255,255,255,1) solid;
     -webkit-backface-visibility:                  hidden;
@@ -178,7 +178,7 @@ input[type='range']::-webkit-slider-thumb {
     -webkit-transform:rotateY(180deg) rotateZ(-90deg) translateZ(50px) ;
     -moz-transform:rotateY(180deg) rotateZ(-90deg) translateZ(50px) ;
     -ms-transform:rotateY(180deg) rotateZ(-90deg) translateZ(50px) ;
-    background: rgba(255,255,0,0.5);
+    background: rgba(0,0,0,0.7);
     z-index:1;
     border:5px rgba(255,255,255,1) solid;
     -webkit-backface-visibility:                  hidden;
@@ -194,7 +194,7 @@ input[type='range']::-webkit-slider-thumb {
     -webkit-transform:rotateX(-90deg)  translateZ(50px);
     -moz-transform:rotateX(-90deg)  translateZ(50px);
     -ms-transform:rotateX(-90deg)  translateZ(50px);
-    background: rgba(0,255,0,0.5);
+    background: rgba(0,0,0,0.7);
     z-index:1;
     border:5px rgba(255,255,255,1) solid;
     -webkit-backface-visibility:                  hidden;
@@ -210,7 +210,7 @@ input[type='range']::-webkit-slider-thumb {
     -webkit-transform:rotateX(90deg) rotateZ(90deg) translateZ(50px) ;
     -moz-transform:rotateX(90deg) rotateZ(90deg) translateZ(50px) ;
     -ms-transform:rotateX(90deg) rotateZ(90deg) translateZ(50px) ;
-    background: rgba(0,255,255,0.5);
+    background: rgba(0,0,0,0.7);
     z-index:1;
     border:5px rgba(255,255,255,1) solid;
     -webkit-backface-visibility:                  hidden;
@@ -226,7 +226,7 @@ input[type='range']::-webkit-slider-thumb {
     -webkit-transform:rotateY(90deg) rotateZ(-90deg)  translateZ(50px) ;
     -moz-transform:rotateY(90deg) rotateZ(-90deg)  translateZ(50px) ;
     -ms-transform:rotateY(90deg) rotateZ(-90deg)  translateZ(50px) ;
-    background: rgba(0,0,255,0.5);
+    background: rgba(0,0,0,0.7);
     z-index:1;
     border:5px rgba(255,255,255,1) solid;
     -webkit-backface-visibility:                  hidden;
@@ -242,7 +242,7 @@ input[type='range']::-webkit-slider-thumb {
     -webkit-transform:rotateY(-90deg) translateZ(50px);
     -moz-transform:rotateY(-90deg) translateZ(50px);
     -ms-transform:rotateY(-90deg) translateZ(50px);
-    background: rgba(255,0,255,0.5);
+    background: rgba(0,0,0,0.7);
     z-index:1;
     border:5px rgba(255,255,255,1) solid;
     -webkit-backface-visibility:                  hidden;
