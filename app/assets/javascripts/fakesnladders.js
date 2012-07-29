@@ -207,7 +207,7 @@ FakesNLadders.prototype.init = function(redraw) {
     setInterval(playerUpdateLoop, 2000);
 }
 
-FakesNLadders.prototype.initPlayer(userInfo, redraw) {
+FakesNLadders.prototype.initPlayer = function(userInfo, redraw) {
     var playerImage = new Image();
     playerImage.src = userInfo.avatar_url;
     playerImage.width = 40;
@@ -218,7 +218,7 @@ FakesNLadders.prototype.initPlayer(userInfo, redraw) {
     this.layer.addGameObject(this.playerMap[userInfo.id]);
 }
 
-FakesNLadders.prototype.updatePlayers(redraw) {
+FakesNLadders.prototype.updatePlayers = function(redraw) {
     var this_ = this;
     var request = new GameRequest();
     request.getAllUsers(function(userList) {
