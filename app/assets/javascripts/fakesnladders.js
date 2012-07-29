@@ -223,6 +223,33 @@ FakesNLadders.prototype.draw = function(context) {
 FakesNLadders.prototype.hit = function(p) {
 }
 
+function diceMove(face) {
+	var x,y,z;
+	switch (face) {
+		case 6:
+			x = 0; y = 0; z = 0;
+			break;
+		case 5:
+			x = 90; y = 0; z = 0;
+			break;
+		case 4:
+			x = 90; y = 0; z = 90;
+			break;
+		case 3:
+			x = 180; y = 0; z = 90;
+			break;
+		case 2:
+			x = 180; y = 90; z = 90;
+			break;
+		case 1:
+			x = 180; y = 90; z = 180;
+			break;
+	}
+	document.getElementById('cube').style.webkitTransform = "rotateX("+x+"deg) rotateY("+y+"deg) rotateZ("+z+"deg)";
+	document.getElementById('cube').style.MozTransform = "rotateX("+x+"deg) rotateY("+y+"deg) rotateZ("+z+"deg)";
+	document.getElementById('cube').style.msTransform = "rotateX("+x+"deg) rotateY("+y+"deg) rotateZ("+z+"deg)";
+}
+
 function init() {
     var game = document.getElementById('game');
     var gameContext = game.getContext('2d');
