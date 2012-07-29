@@ -5,6 +5,7 @@
             width: 929px;
             height: 600px;
             background-image: url(<%= asset_path 'faded.png' %>);
+            color: black;
         }
         canvas {
             display: block;
@@ -34,6 +35,7 @@
     <script type="text/javascript">
         var WIDTH = 929;
         var HEIGHT = 600;
+        var testPlayerImage = '<%= asset_path 'test_player.gif' %>';
     </script>
     <%= javascript_include_tag "utils.js" %>
     <%= javascript_include_tag "gameRequest.js" %>
@@ -44,10 +46,10 @@
     <canvas id="game" width="600" height="600"></canvas>
     <canvas id="back-buffer" width="600" height="600"></canvas>
     <div id="side">
-        <div style="width: 329px; height: 120px">GOAL</div>
+        <div style="width: 329px; height: 120px; font-size: 16px; font-family: sans-serif; font-weight: bold; border: 0.5px solid black; border-left: 0px; border-top: 0px;">100</div>
         <div class="button">Option A etc etc etc etc etc etc etc etc etc etc etc etc etc etc etc</div>
         <div class="button">Option B etc etc etc etc etc etc etc etc etc etc etc etc etc etc etc</div>
-        <div style="width: 329px; height: 120px">STATUS</div>
+        <div style="width: 329px; height: 120px; font-size: 16px; font-family: sans-serif; font-weight: bold;">STATUS</div>
     </div>
 </div>
 
