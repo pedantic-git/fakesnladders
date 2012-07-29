@@ -158,6 +158,7 @@ function FakesNLadders(layer, gridSize) {
     this.layer.addGameObject(this);
     this.squaresToSide = 10;
     this.squareSize = this.gridSize / this.squaresToSide;
+    this.playerMap = {};
 }
 
 FakesNLadders.prototype.init = function(redraw) {
@@ -185,12 +186,58 @@ FakesNLadders.prototype.init = function(redraw) {
     this.layer.addGameObject(new Ladder(this.getGrid(55), this.getGrid(86)));
     this.layer.addGameObject(new Ladder(this.getGrid(49), this.getGrid(92)));
     this.layer.addGameObject(new Ladder(this.getGrid(12), this.getGrid(31)));
+    
+    // init players
+    var this_ = this;
+    var request = new GameRequest();
+    request.getAllUsers(function(userList) {
+        if(!userList || !userList.length) {
+            return;
+        }
+            
+        for(var i = 0; i < userList.length; i++) {
+            this_.initPlayer(userList[i], redraw);
+        }
+    });
+    
+    // start player update loop
+    function playerUpdateLoop() {
+        this_.updatePlayers(redraw);
+    }
+    setInterval(playerUpdateLoop, 2000);
+}
 
+FakesNLadders.prototype.initPlayer(userInfo, redraw) {
     var playerImage = new Image();
-    playerImage.src = testPlayerImage;
+    playerImage.src = userInfo.avatar_url;
+    playerImage.width = 40;
+    playerImage.height = 40;
     playerImage.onload = redraw;
-    var p = new Player(this, this.getGrid(0), playerImage);
-    this.layer.addGameObject(p);
+    
+    this.playerMap[userInfo.id] = new Player(this, this.getGrid(userInfo.position), playerImage);
+    this.layer.addGameObject(this.playerMap[userInfo.id]);
+}
+
+FakesNLadders.prototype.updatePlayers(redraw) {
+    var this_ = this;
+    var request = new GameRequest();
+    request.getAllUsers(function(userList) {
+        if(!userList || !userList.length) {
+            return;
+        }
+        
+        for(var i = 0; i < userList.length; i++) {
+            var playerId = userList[i].id;
+            var player = this.playerMap[playerId];
+            
+            if(player) {
+                var newSquare = userList[i].position;
+                player.move(this.getGrid(newSquare));
+            } else {
+                this_.initPlayer(userList[i], redraw);
+            }
+        }
+    });
 }
 
 FakesNLadders.prototype.getGrid = function(score) {
