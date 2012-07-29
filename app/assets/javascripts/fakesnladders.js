@@ -1,3 +1,4 @@
+var topic = '#leedshack';
 var tickManager;
 var TICK_INTERVAL = Math.floor(1000 / 30);
 var allowClick = true;
@@ -213,9 +214,22 @@ FakesNLadders.prototype.initPlayer = function(userInfo, redraw) {
     playerImage.width = 40;
     playerImage.height = 40;
     playerImage.onload = redraw;
-    
+
     this.playerMap[userInfo.id] = new Player(this, this.getGrid(userInfo.position), playerImage);
     this.layer.addGameObject(this.playerMap[userInfo.id]);
+
+    var p = new Player(this, this.getGrid(0), playerImage);
+    this.layer.addGameObject(p);
+
+    var this_ = this;
+    document.getElementById('option-a').onclick = function() {
+        this_.makeChoice('a');
+    };
+    document.getElementById('option-b').onclick = function() {
+        this_.makeChoice('b');
+    };
+
+    this.nextChoice();
 }
 
 FakesNLadders.prototype.updatePlayers = function(redraw) {
@@ -295,6 +309,35 @@ function diceMove(face) {
 	document.getElementById('cube').style.webkitTransform = "rotateX("+x+"deg) rotateY("+y+"deg) rotateZ("+z+"deg)";
 	document.getElementById('cube').style.MozTransform = "rotateX("+x+"deg) rotateY("+y+"deg) rotateZ("+z+"deg)";
 	document.getElementById('cube').style.msTransform = "rotateX("+x+"deg) rotateY("+y+"deg) rotateZ("+z+"deg)";
+}
+
+function htmlescape(s) {
+    return s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;');
+}
+
+FakesNLadders.prototype.nextChoice = function() {
+    console.log('fetching next choice...');
+    var this_ = this;
+    new GameRequest().getNewChoice(topic, function(choice_id, option_a, option_b) {
+        console.log('next choice received:');
+        console.log('choice_id: ' + choice_id);
+        console.log('option_a: ' + option_a);
+        console.log('option_b: ' + option_b);
+        this_.cur_choice_id = choice_id;
+        document.getElementById('option-a').innerHTML = 'Option A<br /><br />' + htmlescape(option_a);
+        document.getElementById('option-b').innerHTML = 'Option B<br /><br />' + htmlescape(option_b);
+    });
+}
+
+FakesNLadders.prototype.makeChoice = function(choice) {
+    console.log('choice: ' + choice + ' with choice_id ' + this.cur_choice_id);
+    document.getElementById('option-a').innerHTML = 'Option A';
+    document.getElementById('option-b').innerHTML = 'Option B';
+    var this_ = this;
+    new GameRequest().checkChoice(this.cur_choice_id, choice, function(correct) {
+        console.log('correct: ' + correct);
+        this_.nextChoice();
+    });
 }
 
 function init() {

@@ -32,22 +32,31 @@ GameRequest.prototype.updateUserSquare = function(userId, newSquare, optionalCal
 
 // callback will be passed the question id, option a, and option b
 GameRequest.prototype.getNewChoice = function(topic, callback) {
-    var url = "/api/choices/new";
+    var url = "/api/choices/new?topic=" + escape(topic);
     var reqCallback = function(response) {
-        callback(response.id, response.option_a, response.option_b);
+        callback(response.id, response.a, response.b);
     };
-    this.sendRequest("GET", url, {"topic": topic}, reqCallback);
+    this.sendRequest("GET", url, null, reqCallback);
 }
 
 // callback will be passed true if question was answered correctly, else false
 // choice parameter should be 'a' or 'b'
 GameRequest.prototype.checkChoice = function(questionId, choice, callback) {
     var url = "/api/choices/"+questionId;
+    console.log('questionId: ' + questionId);
+    console.log('url: ' + url);
+    console.log('choice: ' + choice);
     var reqCallback = function(response) {
+        console.log('checkChoice reqCallback:');
+        console.log(response);
         var correct = (response.answer === "real");
         callback(correct);
     };
-    this.sendRequest("PUT", url, {"option": choice}, reqCallback);
+    $.ajax(url, {
+        type: 'PUT',
+        dataType: 'json',
+        data: {"option": choice}
+    }).done(reqCallback);
 }
 
 // callback will take a single request respose object
